@@ -2,12 +2,22 @@
   "name": "ssg-vue-starter",
   "scripts": {
     "develop": "vite",
-    "build": "vite build && vite build --ssr"
+    "build": "vite build && vite build --ssr",
+    "lint": "eslint . --ext=ts,vue --fix"
   },
   "dependencies": {
-    "@travisreynolds/ssg": "^0.0.6",
-    "@vitejs/plugin-vue": "^2.2.4",
-    "vite": "^2.8.5",
     "vue": "^3.2.31"
+  },
+  "devDependencies": {
+    "@travisreynolds/ssg": "workspace:^0.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@vitejs/plugin-vue": "^2.2.4",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-vue": "^8.5.0",
+    "vite": "^2.8.5"
   }
 }
