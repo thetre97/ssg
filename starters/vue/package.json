@@ -1,5 +1,5 @@
 {
-  "name": "@travisreynolds/ssg-vue",
+  "name": "ssg-vue-starter",
   "scripts": {
     "develop": "vite",
     "build": "vite build && vite build --ssr"
