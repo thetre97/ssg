@@ -1,0 +1,60 @@
+{
+  "name": "@travisreynolds/ssg",
+  "version": "0.0.6",
+  "description": "",
+  "author": "Travis Reynolds <travis@travisreynolds.dev>",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "renderer"],
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "develop": "rollup -c --watch",
+    "build": "rollup -c",
+    "lint": "eslint . --ext=ts --fix",
+    "test": "peeky run",
+    "test:open": "peeky open --port 8081"
+  },
+  "dependencies": {
+    "@vue/server-renderer": "^3.2.31",
+    "body-parser": "^1.19.2",
+    "change-case": "^4.1.2",
+    "graphql": "^16.3.0",
+    "graphql-compose": "^9.0.7",
+    "graphql-helix": "^1.11.0",
+    "lokijs": "^1.5.12",
+    "unconfig": "^0.3.1"
+  },
+  "peerDependencies": {
+    "vite": "^2.8.4",
+    "vite-plugin-ssr": "^0.3.60-beta.2",
+    "vue": "^3.2.31"
+  },
+  "devDependencies": {
+    "@peeky/test": "^0.13.2",
+    "@types/lokijs": "^1.5.7",
+    "@types/node": "^17.0.21",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "rollup": "^2.68.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-node-externals": "^4.0.0",
+    "rollup-plugin-ts": "^2.0.5",
+    "typescript": "^4.5.5",
+    "vite": "^2.8.4",
+    "vite-plugin-ssr": "^0.3.60-beta.2",
+    "vue": "^3.2.31",
+    "@types/body-parser": "~1.19.2"
+  }
+}

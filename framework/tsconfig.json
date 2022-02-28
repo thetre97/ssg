@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es2020",
+    "outDir": "dist",
+    "declaration": true,
+    "strict": true,
+    "module": "esnext",
+    "noEmitOnError": true,
+    "esModuleInterop": true,
+    "types": ["@peeky/test"],
+    "paths": {
+      "types/*": ["types/*"]
+    }
+  },
+  "include": ["src", "types", "renderer"]
+}

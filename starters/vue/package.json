@@ -1,0 +1,18 @@
+{
+  "name": "@travisreynolds/ssg-vue",
+  "scripts": {
+    "develop": "vite",
+    "build": "vite build && vite build --ssr"
+  },
+  "dependencies": {
+    "@travisreynolds/ssg": "^0.0.6",
+    "@vitejs/plugin-react": "^1.2.0",
+    "@vitejs/plugin-vue": "^2.2.4",
+    "express": "^4.17.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "vite": "^2.8.4",
+    "vite-plugin-ssr": "^0.3.60-beta.2",
+    "vue": "^3.2.31"
+  }
+}
