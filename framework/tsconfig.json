@@ -16,5 +16,5 @@
       "types/*": ["types/*"]
     }
   },
-  "include": ["src", "types", "renderer"]
+  "include": ["src", "types", "renderer", "ssg.js"]
 }

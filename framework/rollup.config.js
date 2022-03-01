@@ -24,5 +24,20 @@ export default [
       externals({ deps: true }),
       ts()
     ]
+  },
+  {
+    input: 'src/cli.ts',
+    output: [
+      {
+        format: 'cjs',
+        exports: 'auto',
+        file: 'dist/cli.js',
+        sourcemap: true
+      }
+    ],
+    plugins: [
+      externals({ deps: true }),
+      ts()
+    ]
   }
 ]
