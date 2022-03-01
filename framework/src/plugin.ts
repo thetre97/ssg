@@ -2,7 +2,9 @@ import * as vite from 'vite'
 import bodyParser from 'body-parser'
 import fs from 'fs'
 import path from 'path'
+import serveStatic from 'serve-static'
 import { createPageRenderer } from 'vite-plugin-ssr'
+import { getDistDirectory, renderAltair, RenderOptions } from 'altair-static'
 import { getGraphQLParameters, processRequest, renderGraphiQL, shouldRenderGraphiQL, sendResult, Request } from 'graphql-helix'
 import { loadConfig } from 'unconfig'
 import { prerender } from 'vite-plugin-ssr/cli'
@@ -112,8 +114,18 @@ export function Plugin (): vite.Plugin {
         })
 
         server.middlewares.use(bodyParser.json())
+        server.middlewares.use('/altair', serveStatic(getDistDirectory()))
 
         server.middlewares.use(async (req, res, next) => {
+          if (req.originalUrl === '/altair') {
+            const renderOptions: RenderOptions = {
+              baseURL: '/altair/test',
+              endpointURL: '/graphql'
+            }
+            const altairAsString = renderAltair(renderOptions)
+            return res.end(altairAsString)
+          }
+
           if (req.originalUrl === '/graphql') {
             const request: Request = {
               body: (req as IncomingMessage & { body: any }).body,

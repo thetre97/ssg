@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@vue/server-renderer": "^3.2.31",
+    "altair-static": "^4.4.0",
     "body-parser": "^1.19.2",
     "change-case": "^4.1.2",
     "deepmerge": "^4.2.2",
@@ -34,6 +35,7 @@
     "graphql-compose-json": "^6.2.0",
     "graphql-helix": "^1.11.0",
     "lokijs": "^1.5.12",
+    "serve-static": "^1.14.2",
     "unconfig": "^0.3.1",
     "vite-plugin-ssr": "^0.3.60-beta.2"
   },
