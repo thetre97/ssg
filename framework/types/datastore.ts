@@ -9,9 +9,17 @@ export interface Schema {
   createTypes: () => void
 }
 
+export interface CollectionRelationOptions {
+  field: string
+  type: string
+  localKey: string
+  foreignKey: 'id' | string
+}
+
 export interface StoreCollection {
   collection: Collection
   add: (items: unknown | unknown[]) => Collection
+  createRelation: (options: CollectionRelationOptions) => Collection
 }
 
 export interface StoreCollectionMeta {
@@ -20,12 +28,18 @@ export interface StoreCollectionMeta {
   /** GraphQL Query field name */
   fieldName: string
   /** GraphQL Query list name */
-  fieldListName: string
+  fieldListName: string,
+  relations: CollectionRelationOptions[]
+}
+
+export interface CollectionOptions {
+  primaryKey: string
+  uniqueKeys: string[]
 }
 
 export interface Store {
   collectionMap: Map<string, StoreCollectionMeta>
-  createCollection: (name: string) => StoreCollection
+  createCollection: (name: string, option: CollectionOptions) => StoreCollection
   getCollection: (name: string) => StoreCollection
 }
 

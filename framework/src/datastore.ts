@@ -25,13 +25,21 @@ function collectionFactory (db: Loki, schemaComposer: SchemaComposer): Store {
       collection.insert(formattedItems)
 
       return collection
+    },
+    createRelation: (options) => {
+      const collectionMeta = collectionMap.get(collection.name)
+      if (!collectionMeta) throw new Error(`Cannot find collection meta for ${collection.name}`)
+      collectionMeta.relations.push(options)
+
+      return collection
     }
   })
 
   return {
     collectionMap,
     /** Create a new collection with a specific name, and return the collection and helper functions. */
-    createCollection: (name: string) => {
+    createCollection: (name, options) => {
+      // Options here
       if (!name) throw new Error('createCollection must be passed a name.')
 
       const collectionName = pascalCase(name)
@@ -39,12 +47,11 @@ function collectionFactory (db: Loki, schemaComposer: SchemaComposer): Store {
       const fieldName = camelCase(collectionName)
       const fieldListName = camelCase(`all${collectionPluralName}`)
 
-      collectionMap.set(collectionName, { name: collectionName, fieldName, fieldListName })
+      collectionMap.set(collectionName, { name: collectionName, fieldName, fieldListName, relations: [] })
       const collection = db.addCollection(collectionName, {
         autoupdate: true,
-        // Let persons add unique keys
-        indices: ['id', 'slug'],
-        unique: ['id', 'slug']
+        indices: options.primaryKey,
+        unique: options.uniqueKeys
       })
 
       return databaseFunctions(collection)
@@ -61,6 +68,14 @@ function collectionFactory (db: Loki, schemaComposer: SchemaComposer): Store {
 }
 
 function schemaFactory (db: Loki, store: Store, schemaComposer: SchemaComposer) {
+  const lokiFilterTC = schemaComposer.createInputTC({
+    name: 'LokiFiltersInput',
+    fields: {
+      eq: 'String',
+      ne: 'String'
+    }
+  })
+
   const createTypes: Schema['createTypes'] = () => {
     for (const collection of db.collections) {
       const meta = store.collectionMap.get(collection.name)
@@ -70,20 +85,40 @@ function schemaFactory (db: Loki, store: Store, schemaComposer: SchemaComposer) 
       excludedFields.forEach(key => Reflect.deleteProperty(allObjectKeys, key))
 
       const TC = composeWithJson(meta.name, allObjectKeys)
-      schemaComposer.createObjectTC(TC)
+      const OTC = schemaComposer.createObjectTC(TC)
+
+      for (const relation of meta.relations) {
+        const { field, type, localKey, foreignKey = 'id' } = relation
+
+        const singleType = type.replace('[', '').replace(']', '')
+        const rType = db.getCollection(singleType)
+        if (!rType) throw new Error(`Missing ${singleType} type in the database.`)
+
+        OTC.addFields({
+          [field]: {
+            type: type,
+            resolve: (item) => {
+              // Will need to handle ID string/number values better here... perhaps force a type if we know it is a foreignKey?
+              const localValue = foreignKey === 'id' ? String(Reflect.get(item, localKey)) : Number(Reflect.get(item, localKey))
+
+              if (type.startsWith('[') && type.endsWith(']')) {
+                console.log({ [foreignKey]: localValue })
+                return rType.find({ [foreignKey]: localValue })
+              }
+
+              // Get relevant type from loki here, and check if array type?
+              return rType.findOne({ [foreignKey]: localValue })
+            }
+          }
+        })
+      }
 
       // Probably need more complex mapping here, by checking the allObjectKeys value type
       const uniqueArgs = Array.from(new Set([...collection.uniqueNames, 'id'])).map(key => [key, key === 'id' ? 'ID' : 'String'])
 
       // And similar here, but we also want to provide the Loki filtering functionality, so need to allow nested types
       // (using a basic InputType for key types, like LokiFilterInput = { $eq: String })
-      const lokiFilterTC = schemaComposer.createInputTC({
-        name: 'LokiFiltersInput',
-        fields: {
-          eq: 'String',
-          ne: 'String'
-        }
-      })
+
       const allFieldArgs = Object.keys(allObjectKeys).map(key => [key, lokiFilterTC])
 
       schemaComposer.Query.addFields({
