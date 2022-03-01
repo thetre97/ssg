@@ -1,6 +1,6 @@
-import vue from "@vitejs/plugin-vue";
-import ssr from "vite-plugin-ssr/plugin";
-import {ssg} from '@travisreynolds/ssg'
+import vue from '@vitejs/plugin-vue'
+import ssr from 'vite-plugin-ssr/plugin'
+import ssg from '@travisreynolds/ssg'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -8,9 +8,9 @@ export default defineConfig({
     vue(),
     ssr({
       pageFiles: {
-        include: ["@travisreynolds/ssg"],
-      },
-    } ),
+        include: ['@travisreynolds/ssg']
+      }
+    }),
     ssg()
-  ],
+  ]
 })
