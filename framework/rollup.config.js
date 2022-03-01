@@ -8,11 +8,13 @@ export default [
     output: [
       {
         format: 'cjs',
+        exports: 'auto',
         file: 'dist/index.js',
         sourcemap: true
       },
       {
         format: 'es',
+        exports: 'auto',
         file: 'dist/index.esm.js',
         sourcemap: true
       }
