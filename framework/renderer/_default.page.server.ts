@@ -8,8 +8,7 @@ export { render }
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ['pageProps', 'urlPathname']
 
-async function render(pageContext: PageContextBuiltIn & PageContext) {
-  console.log('called framework renderer');
+async function render (pageContext: PageContextBuiltIn & PageContext) {
   const app = createApp(pageContext)
   const appHtml = await renderToString(app)
 
