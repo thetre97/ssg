@@ -1,3 +1,4 @@
 export { Plugin as default } from './plugin'
 
-export type { ServerConfig } from '../types/server'
+export * from '../types/server'
+export * from '../types/datastore'

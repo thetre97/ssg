@@ -6,6 +6,7 @@
       </a>
       <Link href="/">Home</Link>
       <Link href="/about">About</Link>
+      <Link href="/posts">Posts</Link>
     </div>
     <div class="content"><slot /></div>
   </div>
@@ -15,7 +16,7 @@
 import Link from './Link.vue'
 </script>
 
-<style>
+<style lang="scss">
 body {
   margin: 0;
   font-family: sans-serif;
