@@ -1,50 +1,21 @@
 import Loki, { Collection } from 'lokijs'
+import composeWithJson from 'graphql-compose-json'
 import { SchemaComposer, pluralize } from 'graphql-compose'
-import { graphql as graphqlQuery } from 'graphql'
+import { all as deepmerge } from 'deepmerge'
 import { camelCase, pascalCase } from 'change-case'
+import { graphql as graphqlQuery } from 'graphql'
 
 // Types
-import { DataStore, GraphQLExecutor, Store, StoreCollection } from '../types/datastore'
+import { DataStore, GraphQLExecutor, Schema, Store, StoreCollection } from '../types/datastore'
 
 async function loadDB (): Promise<Loki> {
   return new Loki('ssg.db')
-  // return new Promise((resolve, reject) => {
-  //   const db = new Loki('ssg.db', {
-  //     verbose: true,
-  //     autosave: true,
-  //     autoload: true,
-  //     autoloadCallback: (err) => {
-  //       if (err) reject(err)
-  //       resolve(db)
-  //     }
-  //   })
-  // })
 }
 
 const excludedFields = ['meta', '$loki']
 
 function collectionFactory (db: Loki, schemaComposer: SchemaComposer): Store {
-  /** Maps an items fields to their corresponding GraphQL type */
-  const updateTypeFields = (name: string, item: object) => {
-    const collectionTC = schemaComposer.getOrCreateOTC(pascalCase(name))
-    const entries = Object.entries(item).filter(([key]) => !excludedFields.includes(key))
-
-    const findType = (value: unknown) => {
-      const typeOf = typeof value
-      if (typeOf === 'number') return 'Float'
-      if (typeOf === 'string') return 'String'
-      if (typeOf === 'boolean') return 'Boolean'
-      if (value instanceof Date) return 'Date'
-
-      // Handle other types
-      return 'JSON'
-    }
-
-    const fields = Object.fromEntries(entries.map(([key, value]) => [key, findType(value)]))
-    collectionTC.addFields(fields)
-
-    schemaComposer.Query.addFieldArgs(camelCase(name), fields)
-  }
+  const collectionMap: Store['collectionMap'] = new Map()
 
   /** Returns collection helper functions, I.e. adding/removing items from a collection */
   const databaseFunctions = (collection: Collection): StoreCollection => ({
@@ -53,43 +24,27 @@ function collectionFactory (db: Loki, schemaComposer: SchemaComposer): Store {
       const formattedItems = Array.isArray(items) ? items.map(item => ({ ...item, id: item.id.toString() })) : { ...items, id: items.id.toString() }
       collection.insert(formattedItems)
 
-      if (Array.isArray(items)) items.forEach(item => updateTypeFields(collection.name, item))
-      else updateTypeFields(collection.name, items)
-
       return collection
     }
   })
 
   return {
+    collectionMap,
     /** Create a new collection with a specific name, and return the collection and helper functions. */
     createCollection: (name: string) => {
       if (!name) throw new Error('createCollection must be passed a name.')
 
       const collectionName = pascalCase(name)
       const collectionPluralName = pluralize(collectionName)
-
-      const collection = db.addCollection(collectionName, { autoupdate: true })
-
       const fieldName = camelCase(collectionName)
       const fieldListName = camelCase(`all${collectionPluralName}`)
 
-      const defaultFields = { id: 'ID!' }
-      const collectionTC = schemaComposer.createObjectTC({ name: collectionName, fields: defaultFields })
-
-      schemaComposer.Query.addFields({
-        [fieldName]: {
-          type: collectionTC,
-          args: {
-            id: 'ID!'
-          },
-          resolve: (_, args) => {
-            return collection.findOne(args)
-          }
-        },
-        [fieldListName]: {
-          type: [collectionTC],
-          resolve: () => collection.data
-        }
+      collectionMap.set(collectionName, { name: collectionName, fieldName, fieldListName })
+      const collection = db.addCollection(collectionName, {
+        autoupdate: true,
+        // Let persons add unique keys
+        indices: ['id', 'slug'],
+        unique: ['id', 'slug']
       })
 
       return databaseFunctions(collection)
@@ -105,7 +60,76 @@ function collectionFactory (db: Loki, schemaComposer: SchemaComposer): Store {
   }
 }
 
-function schemaFactory (db: Loki, schemaComposer: SchemaComposer) {
+function schemaFactory (db: Loki, store: Store, schemaComposer: SchemaComposer) {
+  const createTypes: Schema['createTypes'] = () => {
+    for (const collection of db.collections) {
+      const meta = store.collectionMap.get(collection.name)
+      if (!meta) throw new Error(`Missing meta information for collection ${collection.name}`)
+
+      const allObjectKeys = deepmerge(collection.data)
+      excludedFields.forEach(key => Reflect.deleteProperty(allObjectKeys, key))
+
+      const TC = composeWithJson(meta.name, allObjectKeys)
+      schemaComposer.createObjectTC(TC)
+
+      // Probably need more complex mapping here, by checking the allObjectKeys value type
+      const uniqueArgs = Array.from(new Set([...collection.uniqueNames, 'id'])).map(key => [key, key === 'id' ? 'ID' : 'String'])
+
+      // And similar here, but we also want to provide the Loki filtering functionality, so need to allow nested types
+      // (using a basic InputType for key types, like LokiFilterInput = { $eq: String })
+      const lokiFilterTC = schemaComposer.createInputTC({
+        name: 'LokiFiltersInput',
+        fields: {
+          eq: 'String',
+          ne: 'String'
+        }
+      })
+      const allFieldArgs = Object.keys(allObjectKeys).map(key => [key, lokiFilterTC])
+
+      schemaComposer.Query.addFields({
+        [meta.fieldName]: {
+          type: TC,
+          args: Object.fromEntries(uniqueArgs),
+          resolve: (_, args) => {
+            if (args.id) return collection.get(args.id)
+            return collection.findOne(args)
+          }
+        },
+        [meta.fieldListName]: {
+          type: [TC],
+          args: {
+            limit: 'Int',
+            skip: 'Int',
+            filter: schemaComposer.createInputTC({
+              name: `${meta.name}FilterInput`,
+              fields: Object.fromEntries(allFieldArgs)
+            })
+          },
+          resolve: (_, args: { skip: number, limit: number, filter: Record<string, Record<string, string>>}) => {
+            const argKeys = Object.keys(args)
+            if (!argKeys.length) return collection.data
+
+            let data = collection.data
+
+            // Could create some Loki views, to add filters?
+            if (args.filter) {
+              const filters = Object.entries(args.filter).map(([key, filters]) => {
+                const transformedKeys = Object.entries(filters).map(([key, value]) => [`$${key}`, value])
+                return [key, Object.fromEntries(transformedKeys)]
+              })
+
+              if (filters.length) {
+                data = collection.find(Object.fromEntries(filters))
+              }
+            }
+
+            return data.slice(args.skip ?? 0, args.limit)
+          }
+        }
+      })
+    }
+  }
+
   const getSchema = () => schemaComposer.buildSchema()
   const graphql: GraphQLExecutor = (query, variables) => {
     return graphqlQuery({
@@ -116,6 +140,7 @@ function schemaFactory (db: Loki, schemaComposer: SchemaComposer) {
   }
   return {
     getSchema,
+    createTypes,
     graphql
   }
 }
@@ -126,7 +151,7 @@ export async function createDataStore (): Promise<DataStore> {
     const schemaComposer = new SchemaComposer()
 
     const store = collectionFactory(db, schemaComposer)
-    const { graphql, ...schema } = schemaFactory(db, schemaComposer)
+    const { graphql, ...schema } = schemaFactory(db, store, schemaComposer)
 
     return { store, schema, graphql }
   } catch (err) {

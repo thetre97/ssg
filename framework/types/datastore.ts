@@ -6,6 +6,7 @@ import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
 
 export interface Schema {
   getSchema: () => GraphQLSchema
+  createTypes: () => void
 }
 
 export interface StoreCollection {
@@ -13,7 +14,17 @@ export interface StoreCollection {
   add: (items: unknown | unknown[]) => Collection
 }
 
+export interface StoreCollectionMeta {
+  /** Loki collection name, and GraphQL typeName */
+  name: string
+  /** GraphQL Query field name */
+  fieldName: string
+  /** GraphQL Query list name */
+  fieldListName: string
+}
+
 export interface Store {
+  collectionMap: Map<string, StoreCollectionMeta>
   createCollection: (name: string) => StoreCollection
   getCollection: (name: string) => StoreCollection
 }

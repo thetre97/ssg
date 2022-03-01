@@ -82,7 +82,13 @@ export function Plugin (): vite.Plugin {
       })
 
       datastore = await createDataStore()
+
+      // Load any data
       if (serverConfig?.config?.data) await serverConfig.config.data(datastore)
+      // Also load any plugins that load data (probably should be before the above)
+
+      // Now create schema stuff
+      datastore.schema.createTypes()
     },
     async closeBundle () {
       if (storedConfig.build?.ssr) {
