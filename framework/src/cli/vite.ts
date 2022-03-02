@@ -4,7 +4,7 @@ import { command } from 'bandersnatch'
 // Vite Plugins
 import vue from '@vitejs/plugin-vue'
 import ssr from 'vite-plugin-ssr/plugin'
-import { SSGPlugin } from '../plugin'
+import { SSGPlugin } from '../plugin/plugin'
 
 const viteConfig: InlineConfig = {
   root: process.cwd(),

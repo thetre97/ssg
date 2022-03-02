@@ -6,7 +6,7 @@ import { camelCase, pascalCase } from 'change-case'
 import { graphql as graphqlQuery } from 'graphql'
 
 // Types
-import { DataStore, GraphQLExecutor, Schema, Store, StoreCollection } from '../types/datastore'
+import { DataStore, GraphQLExecutor, Schema, Store, StoreCollection } from 'types/datastore'
 
 async function loadDB (): Promise<Loki> {
   return new Loki('ssg.db')

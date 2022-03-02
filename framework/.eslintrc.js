@@ -1,18 +1,24 @@
 module.exports = {
   env: {
+    browser: true,
     es2021: true,
     node: true
   },
+  globals: {
+    defineProps: 'readonly'
+  },
   extends: [
-    'standard',
-    'plugin:@peeky/recommended'
+    'plugin:vue/vue3-essential',
+    'plugin:@peeky/recommended',
+    'standard'
   ],
-  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 'latest',
+    ecmaVersion: 12,
+    parser: '@typescript-eslint/parser',
     sourceType: 'module'
   },
   plugins: [
+    'vue',
     '@typescript-eslint'
   ],
   rules: {

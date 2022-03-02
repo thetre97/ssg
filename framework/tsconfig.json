@@ -17,5 +17,5 @@
       "types/*": ["types/*"]
     }
   },
-  "include": ["src", "types", "renderer", "ssg.js", "vite.config.js"]
+  "include": ["src", "types", "renderer", "ssg.js", "vite.config.js", "templates"]
 }

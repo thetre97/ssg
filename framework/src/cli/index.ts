@@ -3,6 +3,7 @@ import { name, version } from '../../package.json'
 
 // Commands
 import * as vite from './vite'
+import * as generator from './generator'
 
 const info = command('info').description('CLI Information').action(() => {
   console.log(`${name}, version ${version}`)
@@ -10,8 +11,8 @@ const info = command('info').description('CLI Information').action(() => {
 
 const cliProgram = program().description('SSG CLI').default(info)
 
-// Add command to program
-Object.values(vite).forEach(cmd => cliProgram.add(cmd))
+// Add commands to program
+Object.values({ ...vite, ...generator }).forEach(cmd => cliProgram.add(cmd))
 
 export default cliProgram.run()
   .catch((err) => {
