@@ -12,9 +12,10 @@
     "noEmitOnError": true,
     "esModuleInterop": true,
     "types": ["@peeky/test"],
+    "resolveJsonModule": true,
     "paths": {
       "types/*": ["types/*"]
     }
   },
-  "include": ["src", "types", "renderer", "ssg.js"]
+  "include": ["src", "types", "renderer", "ssg.js", "vite.config.js"]
 }

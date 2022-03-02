@@ -28,7 +28,7 @@ async function writePage ({ _prerenderResult }: PrerenderContext) {
 
 const SSG_BUNDLE_IMPORT_ID = '@ssg/data'
 
-export function Plugin (): vite.Plugin {
+export function SSGPlugin (): vite.Plugin {
   let datastore: DataStore
   let storedConfig: vite.UserConfig
 

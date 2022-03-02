@@ -1,6 +1,7 @@
-import ts from 'rollup-plugin-ts'
 import del from 'rollup-plugin-delete'
 import externals from 'rollup-plugin-node-externals'
+import json from '@rollup/plugin-json'
+import ts from 'rollup-plugin-ts'
 
 export default [
   {
@@ -26,7 +27,7 @@ export default [
     ]
   },
   {
-    input: 'src/cli.ts',
+    input: 'src/cli/index.ts',
     output: [
       {
         format: 'cjs',
@@ -37,6 +38,7 @@ export default [
     ],
     plugins: [
       externals({ deps: true }),
+      json(),
       ts()
     ]
   }
