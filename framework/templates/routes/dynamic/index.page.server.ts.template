@@ -1,6 +1,6 @@
 import type { PageContextServer } from '@travisreynolds/ssg'
 
-import routeTemplate from './index.page.route'
+import routeTemplate from './index.page.route.ts.template.ts.template'
 
 // We should use this in the datastore to autogenerate paths
 const getPageRoute = (data) => {
@@ -22,6 +22,7 @@ const getPageRoute = (data) => {
 export const pageQuery = 'query Post ($slug: String!){ post (slug: $slug) { id, title, content, coverImage }}'
 
 export async function onBeforeRender (pageContext) {
+  console.log('calling template')
   const variables = { slug: pageContext.routeParams.slug }
   const { data, errors } = await pageContext.datastore.graphql(pageQuery, variables)
 

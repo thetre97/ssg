@@ -54,8 +54,9 @@ export const dynamicRouteCmd = command('generate:route')
 
       const templateDir = path.join(pkgRoot, 'templates/routes/dynamic')
       const templateFiles = await fs.readdir(templateDir)
-      const templateFilesData = await pMap(templateFiles, async filePath => {
-        const data = await fs.readFile(path.join(templateDir, filePath), 'utf-8')
+      const templateFilesData = await pMap(templateFiles, async filePathTemplate => {
+        const filePath = filePathTemplate.replace('.template', '')
+        const data = await fs.readFile(path.join(templateDir, filePathTemplate), 'utf-8')
         return { path: filePath, data }
       })
 
