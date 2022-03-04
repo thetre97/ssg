@@ -69,7 +69,8 @@ export function SSGPlugin (): vite.Plugin {
       return () => {
         let graphqlEndpoint = ''
         server.httpServer?.once('listening', () => {
-          graphqlEndpoint = `http://${server.config.server.host || 'localhost'}:${server.config.server.port || 3000}/graphql`
+          const host = !server.config.server?.host || typeof server.config.server.host === 'boolean' ? 'localhost' : server.config.server.host
+          graphqlEndpoint = `http://${host || 'localhost'}:${server.config.server.port || 3000}/graphql`
 
           setTimeout(() => {
             console.log(`  > GraphQL Explorer: ${graphqlEndpoint}`)
