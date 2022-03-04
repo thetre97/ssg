@@ -1,43 +1,22 @@
 <template>
-  <h1>Latest Posts</h1>
-  <ol v-if="errors?.length">
-    <li
-      v-for="(error, e) in errors"
-      :key="e"
+  <div>
+    <h1>Latest Posts</h1>
+    <ol
+      v-if="posts"
     >
-      {{ error.message }}
-    </li>
-  </ol>
-  <ol
-    v-if="data?.allPosts"
-    v-once
-  >
-    <li
-      v-for="item in data.allPosts"
-      :key="item.id"
-    >
-      <a :href="'/post/' + item.slug">{{ item.title }}</a> ({{ item.slug }})
-    </li>
-  </ol>
+      <li
+        v-for="item in posts"
+        :key="item.id"
+      >
+        <a :href="'/post/' + item.slug">{{ item.title }}</a> ({{ item.slug }})
+      </li>
+    </ol>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { getCurrentInstance } from 'vue'
-
-function usePageData () {
-  const instance = getCurrentInstance()
-  return instance?.type.pageData
+interface Props {
+  posts: { id: string, title: string, slug: string }[]
 }
-
-const { data, errors } = usePageData()
+defineProps<Props>()
 </script>
-
-<page-query>
-query Posts {
-  allPosts {
-    id
-    title
-    slug
-  }
-}
-</page-query>
