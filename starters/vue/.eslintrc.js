@@ -7,6 +7,9 @@ module.exports = {
     'plugin:vue/vue3-recommended',
     'standard'
   ],
+  globals: {
+    defineProps: 'readonly'
+  },
   parserOptions: {
     ecmaVersion: 'latest',
     parser: '@typescript-eslint/parser',
@@ -17,6 +20,7 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
-    'vue/multi-word-component-names': 'off'
+    'vue/multi-word-component-names': 'off',
+    'vue/no-v-html': 'off'
   }
 }
