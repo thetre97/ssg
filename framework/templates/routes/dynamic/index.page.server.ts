@@ -41,7 +41,6 @@ export async function prerender (ctx: PageContextServer) {
 
   return postsCollection.collection.data.flatMap((post) => {
     if (!post) return []
-    const { url } = getPageRoute(post)
-    return [{ url }]
+    return [{ url: post.path }]
   })
 }
