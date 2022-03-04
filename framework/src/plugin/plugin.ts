@@ -26,8 +26,6 @@ async function writePage ({ _prerenderResult }: PrerenderContext) {
   fs.writeFileSync(_prerenderResult.filePath, _prerenderResult.fileContent)
 }
 
-const SSG_BUNDLE_IMPORT_ID = '@ssg/data'
-
 export function SSGPlugin (): vite.Plugin {
   let datastore: DataStore
   let storedConfig: vite.UserConfig
@@ -37,41 +35,6 @@ export function SSGPlugin (): vite.Plugin {
     enforce: 'pre',
     configResolved (config) {
       storedConfig = config as unknown as vite.UserConfig
-    },
-    resolveId (id: string) {
-      if (id === SSG_BUNDLE_IMPORT_ID) {
-        console.log('resolveId', id)
-        return id
-      }
-    },
-    load (id) {
-      if (id === SSG_BUNDLE_IMPORT_ID) {
-        console.log('wanting to load', id)
-        return {
-          code: 'export default \'test-string\''
-        }
-      }
-    },
-    async transform (code, id, options) {
-      if (!/vue&type=page-query/.test(id)) return
-
-      console.log('transforming:', id)
-      if (options?.ssr) {
-        // Run query in prerender fn
-      }
-
-      // Probably not a great idea to do this in prod, as we are storing all this data in JS.
-      // So we could use the query export in SSR, then use that export in the VPS prerender fn
-      // The idea of running the query here is that we can update the page-query query, and HMR will reload it with the new data
-      try {
-        const { data, errors } = await datastore.graphql(code)
-        const pageData = { data, errors, query: code }
-        return `export default Comp => {
-          Comp.pageData = ${JSON.stringify(pageData)}
-        }`
-      } catch (error) {
-        console.error(error)
-      }
     },
     async buildStart () {
       const serverConfig = await loadConfig<ServerConfig>({
