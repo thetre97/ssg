@@ -8,7 +8,7 @@
         v-for="item in posts"
         :key="item.id"
       >
-        <a :href="'/post/' + item.slug">{{ item.title }}</a> ({{ item.slug }})
+        <a :href="item.path">{{ item.title }}</a> ({{ item.path }})
       </li>
     </ol>
   </div>
@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 interface Props {
-  posts: { id: string, title: string, slug: string }[]
+  posts: { id: string, title: string, path: string }[]
 }
 defineProps<Props>()
 </script>

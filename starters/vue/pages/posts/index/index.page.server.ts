@@ -4,7 +4,7 @@ const pageQuery = `query Post {
   allPosts {
     id
     title
-    slug
+    path
   }
 }`
 

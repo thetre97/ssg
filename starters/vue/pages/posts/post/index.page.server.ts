@@ -1,23 +1,5 @@
 import type { PageContextServer } from '@travisreynolds/ssg'
 
-import routeTemplate from './index.page.route'
-
-const getPageRoute = (data) => {
-  const params = {}
-  const url = routeTemplate.split('/').map(str => {
-    if (!str.includes(':')) return str
-
-    const param = str.replace(':', '')
-    const paramValue = Reflect.get(data, param)
-    if (!paramValue) throw new Error(`Missing value in data for param ${param}`)
-
-    Reflect.set(params, param, paramValue)
-    return paramValue
-  }).join('/')
-
-  return { url, params }
-}
-
 export const pageQuery = 'query Post ($slug: String!){ post (slug: $slug) { id, title, content, coverImage }}'
 
 export async function onBeforeRender (pageContext) {
@@ -40,7 +22,6 @@ export async function prerender (ctx: PageContextServer) {
 
   return postsCollection.collection.data.flatMap((post) => {
     if (!post) return []
-    const { url } = getPageRoute(post)
-    return [{ url }]
+    return [{ url: post.path }]
   })
 }
