@@ -37,3 +37,7 @@ async function render (pageContext: PageContextBuiltIn & PageContext) {
     }
   }
 }
+
+export function prerender () {
+  console.log('global prerender')
+}

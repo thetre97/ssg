@@ -4,6 +4,9 @@ import ssg from '@travisreynolds/ssg'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  server: {
+    host: 'localhost'
+  },
   plugins: [
     vue(),
     ssr({

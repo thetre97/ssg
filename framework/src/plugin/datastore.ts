@@ -4,9 +4,10 @@ import { SchemaComposer, pluralize } from 'graphql-compose'
 import { all as deepmerge } from 'deepmerge'
 import { camelCase, pascalCase } from 'change-case'
 import { graphql as graphqlQuery } from 'graphql'
+import { pathToRegexp, compile as compilePath, Key } from 'path-to-regexp'
 
 // Types
-import { DataStore, GraphQLExecutor, Schema, Store, StoreCollection } from 'types/datastore'
+import { DataStore, GraphQLExecutor, Schema, Store, StoreCollection, StoreCollectionMeta } from 'types/datastore'
 
 async function loadDB (): Promise<Loki> {
   return new Loki('ssg.db')
@@ -14,44 +15,76 @@ async function loadDB (): Promise<Loki> {
 
 const excludedFields = ['meta', '$loki']
 
-function collectionFactory (db: Loki, schemaComposer: SchemaComposer): Store {
+function formatCollectionItem ({ route }: StoreCollectionMeta) {
+  const createPath = compilePath(route.path, { encode: encodeURIComponent })
+  return (item: Record<string, any>) => {
+    for (const param of route.params) {
+      if (!Reflect.has(item, param.name)) throw new Error(`Item ${item.id} is missing a required route parameter: ${param.name}`)
+    }
+
+    const path = createPath(item)
+    return { ...item, id: item.id.toString(), path }
+  }
+}
+
+function collectionFactory (db: Loki): Store {
   const collectionMap: Store['collectionMap'] = new Map()
 
   /** Returns collection helper functions, I.e. adding/removing items from a collection */
-  const databaseFunctions = (collection: Collection): StoreCollection => ({
-    collection,
-    add: (items: any | any[]): Collection => {
-      const formattedItems = Array.isArray(items) ? items.map(item => ({ ...item, id: item.id.toString() })) : { ...items, id: items.id.toString() }
-      collection.insert(formattedItems)
+  const databaseFunctions = (collection: Collection): StoreCollection => {
+    const collectionMeta = collectionMap.get(collection.name)
+    if (!collectionMeta) throw new Error(`Missing meta for collection ${collection.name}`)
+    const itemFormatter = formatCollectionItem(collectionMeta)
 
-      return collection
-    },
-    createRelation: (options) => {
-      const collectionMeta = collectionMap.get(collection.name)
-      if (!collectionMeta) throw new Error(`Cannot find collection meta for ${collection.name}`)
-      collectionMeta.relations.push(options)
+    return {
+      collection,
+      add: (items: any | any[]): Collection => {
+        const formattedItems = Array.isArray(items) ? items.map(itemFormatter) : itemFormatter(items)
+        collection.insert(formattedItems)
 
-      return collection
+        return collection
+      },
+      createRelation: (options) => {
+        const collectionMeta = collectionMap.get(collection.name)
+        if (!collectionMeta) throw new Error(`Cannot find collection meta for ${collection.name}`)
+        collectionMeta.relations.push(options)
+
+        return collection
+      }
     }
-  })
+  }
 
   return {
     collectionMap,
     /** Create a new collection with a specific name, and return the collection and helper functions. */
     createCollection: (name, options) => {
-      // Options here
+      // Options here, use a better assert library
       if (!name) throw new Error('createCollection must be passed a name.')
+      if (!options) throw new Error('createCollection must be passed an options object.')
+      if (!options.route) throw new Error('createCollection.options must be passed a route.')
 
       const collectionName = pascalCase(name)
       const collectionPluralName = pluralize(collectionName)
       const fieldName = camelCase(collectionName)
       const fieldListName = camelCase(`all${collectionPluralName}`)
 
-      collectionMap.set(collectionName, { name: collectionName, fieldName, fieldListName, relations: [] })
+      const params: Key[] = []
+      pathToRegexp(options.route, params)
+      collectionMap.set(collectionName, {
+        name: collectionName,
+        fieldName,
+        fieldListName,
+        relations: [],
+        route: {
+          path: options.route,
+          params
+        }
+      })
+
       const collection = db.addCollection(collectionName, {
         autoupdate: true,
-        indices: options.primaryKey,
-        unique: options.uniqueKeys
+        indices: options.primaryKey ?? 'id',
+        unique: [...(options.uniqueKeys ?? ['id']), 'path']
       })
 
       return databaseFunctions(collection)
@@ -185,7 +218,7 @@ export async function createDataStore (): Promise<DataStore> {
     const db = await loadDB()
     const schemaComposer = new SchemaComposer()
 
-    const store = collectionFactory(db, schemaComposer)
+    const store = collectionFactory(db)
     const { graphql, ...schema } = schemaFactory(db, store, schemaComposer)
 
     return { store, schema, graphql }

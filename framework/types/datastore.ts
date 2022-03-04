@@ -3,6 +3,7 @@ import type { ExecutionResult, GraphQLSchema } from 'graphql'
 import type { ObjMap } from 'graphql-compose'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
+import { Key } from 'path-to-regexp'
 
 export interface Schema {
   getSchema: () => GraphQLSchema
@@ -30,11 +31,16 @@ export interface StoreCollectionMeta {
   /** GraphQL Query list name */
   fieldListName: string,
   relations: CollectionRelationOptions[]
+  route: {
+    path: string
+    params: Key[]
+  }
 }
 
 export interface CollectionOptions {
   primaryKey: string
   uniqueKeys: string[]
+  route: string
 }
 
 export interface Store {

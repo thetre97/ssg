@@ -37,6 +37,7 @@ export function SSGPlugin (): vite.Plugin {
       storedConfig = config as unknown as vite.UserConfig
     },
     async buildStart () {
+      console.log('starting build')
       const serverConfig = await loadConfig<ServerConfig>({
         sources: [
           {
@@ -47,11 +48,11 @@ export function SSGPlugin (): vite.Plugin {
       })
 
       datastore = await createDataStore()
-
+      console.log('loading data')
       // Load any data
       if (serverConfig?.config?.data) await serverConfig.config.data(datastore)
       // Also load any plugins that load data (probably should be before the above)
-
+      console.log('loaded data')
       // Now create schema stuff
       datastore.schema.createTypes()
     },
