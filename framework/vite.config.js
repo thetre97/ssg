@@ -8,7 +8,7 @@ export default defineConfig({
     vue(),
     ssr({
       pageFiles: {
-        include: ['@travisreynolds/ssg']
+        include: ['@travisreynolds/ssg/renderer']
       }
     }),
     ssg()
