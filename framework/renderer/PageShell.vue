@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <div class="navigation">
-      <a href="/" class="logo">
+      <a href="/" class="logo text-red-400">
         Framework!
       </a>
       <Link href="/">Home</Link>

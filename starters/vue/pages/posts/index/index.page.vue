@@ -1,6 +1,10 @@
 <template>
   <div>
-    <h1>Latest Posts</h1>
+    <h1
+      class="text-cyan-200"
+    >
+      Latest Posts
+    </h1>
     <ol
       v-if="posts"
     >

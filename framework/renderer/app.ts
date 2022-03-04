@@ -4,6 +4,9 @@ import { setPageContext } from './usePageContext'
 
 export { createApp }
 
+import 'virtual:windi.css'
+
+
 function createApp (pageContext) {
   const { Page, pageProps } = pageContext
   const PageWithLayout = defineComponent({
