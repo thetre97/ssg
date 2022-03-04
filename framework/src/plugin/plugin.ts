@@ -31,7 +31,7 @@ export function SSGPlugin (): vite.Plugin {
   let storedConfig: vite.UserConfig
 
   return {
-    name: 'ssg-custom-blocks',
+    name: 'ssg',
     enforce: 'pre',
     configResolved (config) {
       storedConfig = config as unknown as vite.UserConfig
@@ -48,11 +48,11 @@ export function SSGPlugin (): vite.Plugin {
       })
 
       datastore = await createDataStore()
-      console.log('loading data')
+
       // Load any data
       if (serverConfig?.config?.data) await serverConfig.config.data(datastore)
       // Also load any plugins that load data (probably should be before the above)
-      console.log('loaded data')
+
       // Now create schema stuff
       datastore.schema.createTypes()
     },
