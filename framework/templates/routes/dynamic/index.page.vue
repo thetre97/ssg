@@ -1,5 +1,5 @@
 <template>
-  <h1>{{ item.id }}</h1>
+  <h1>test</h1>
 </template>
 
 <script lang="ts" setup>
