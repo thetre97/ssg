@@ -35,6 +35,7 @@ importers:
       inflection: ^1.13.2
       lokijs: ^1.5.12
       p-map: '4'
+      path-to-regexp: ^6.2.0
       pkg-dir: '5'
       rollup: ^2.68.0
       rollup-plugin-delete: ^2.0.0
@@ -63,6 +64,7 @@ importers:
       inflection: 1.13.2
       lokijs: 1.5.12
       p-map: 4.0.0
+      path-to-regexp: 6.2.0
       pkg-dir: 5.0.0
       serve-static: 1.14.2
       unconfig: 0.3.1
@@ -94,7 +96,7 @@ importers:
   starters/vue:
     specifiers:
       '@faker-js/faker': ^6.0.0-alpha.7
-      '@travisreynolds/ssg': workspace:latest
+      '@travisreynolds/ssg': latest
       '@typescript-eslint/eslint-plugin': ^5.13.0
       '@vitejs/plugin-vue': ^2.2.4
       eslint: ^7.32.0
@@ -104,8 +106,10 @@ importers:
       eslint-plugin-promise: ^4.3.1
       eslint-plugin-vue: ^8.5.0
       sass: ^1.49.9
+      v-lazy-image: ^2.1.1
       vue: ^3.2.31
     dependencies:
+      v-lazy-image: 2.1.1
       vue: 3.2.31
     devDependencies:
       '@faker-js/faker': 6.0.0-alpha.7
@@ -4250,6 +4254,10 @@ packages:
       isarray: 0.0.1
     dev: true
 
+  /path-to-regexp/6.2.0:
+    resolution: {integrity: sha512-f66KywYG6+43afgE/8j/GoiNyygk/bnoCbps++3ErRKsIYkGGupyv07R2Ok5m9i67Iqc+T2g1eAUGUPzWhYTyg==}
+    dev: false
+
   /path-type/4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
@@ -5125,6 +5133,10 @@ packages:
   /uuid/8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
+
+  /v-lazy-image/2.1.1:
+    resolution: {integrity: sha512-QC6Jcok99CRhhsO7svfI3hcBaT945dSuaHk3jr7WHm+QJMzbB/f32xKkdF45qL5ezd5KeoqHKh4gD92mQtjfXQ==}
+    dev: false
 
   /v8-compile-cache/2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}

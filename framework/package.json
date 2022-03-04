@@ -44,6 +44,7 @@
     "inflection": "^1.13.2",
     "lokijs": "^1.5.12",
     "p-map": "4",
+    "path-to-regexp": "^6.2.0",
     "pkg-dir": "5",
     "serve-static": "^1.14.2",
     "unconfig": "^0.3.1",
