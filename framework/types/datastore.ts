@@ -77,6 +77,7 @@ export interface CollectionItemWithMeta extends CollectionItem {
   path?: string
   $loki: string
   meta: Record<string, unknown>
+  pageId?: string
 }
 
 export type CollectionItemAdd<Item = CollectionItem> = Item | Item[]

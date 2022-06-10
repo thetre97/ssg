@@ -83,7 +83,9 @@ export class Collection {
       : typeof route?.path === 'function'
         ? route.path(item, this.datastore)
         : undefined
-    return { ...item, id, path }
+
+    const template = this.meta.route?.template
+    return { ...item, id, path, template }
   }
 
   /** Add a single item, or an array of items, to the current collection. */

@@ -32,15 +32,14 @@ export async function render (pageContext: PageContext) {
   return { documentHtml }
 }
 
-export async function onBeforeRender ({ datalayer, url, Page }: PageContext) {
+export async function onBeforeRender ({ url, Page }: PageContext) {
   const pageQuery = Page.pageQuery?.query
   if (pageQuery) {
-    // TODO: This should be cached somewhere
-    const routes = datalayer.router.fetchRoutes()
+    const routes = global.__SSG_DATALAYER.router.fetchRoutes()
     const item = routes.get(url)
 
     // Now use this as variables in the query?
-    const { data, errors } = await datalayer.graphql.query({
+    const { data, errors } = await global.__SSG_DATALAYER.graphql.query({
       query: pageQuery,
       variables: item
     })
@@ -58,8 +57,16 @@ export async function onBeforeRender ({ datalayer, url, Page }: PageContext) {
 }
 
 export function prerender () {
-  // Here, we should fetch all routes and their data, and return as an array.
-  const routes = global.datalayer.router.fetchRoutes()
+  const routes = global.__SSG_DATALAYER.router.fetchRoutes()
 
-  console.log('global prerender')
+  const pages = Array.from(routes).map(([path, route]) => ({
+    url: path,
+    pageContext: {
+      pageData: {
+        post: route
+      }
+    }
+  }))
+
+  return pages
 }

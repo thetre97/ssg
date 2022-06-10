@@ -10,8 +10,8 @@ import utils from './lib/utils'
 // Types
 import { IncomingMessage } from 'node:http'
 
-export function WindSSG (_options = {}): Plugin {
-  utils.reporter.log('Starting WindSSG with options:', JSON.stringify(_options, null, 2))
+export function Wind (_options = {}): Plugin {
+  utils.reporter.log('Starting Wind with options:', JSON.stringify(_options, null, 2))
 
   let datalayer: DataLayer | undefined
 

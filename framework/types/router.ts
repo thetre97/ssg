@@ -30,6 +30,8 @@ export interface Route {
    * @example (item) => `/posts/${item.date}/${item.slug}` - `/posts/2022-05-09/hello-world`
    */
   path: string | RoutePathFn
+  /** A template must have a corresponding pageId from vite-plugin-ssr - we can usually guess this ahead of time, as we run before vps. */
+  pageId?: string
 }
 
 /** Parsed route string, with the original path and the params needed. */

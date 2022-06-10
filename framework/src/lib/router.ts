@@ -18,6 +18,8 @@ export default class Router {
 
   private database: Loki
   private collections: CollectionsMetaMap
+
+  // TODO: Rename this as routesMap, and use this property to store a cached list of routes
   private routes: RouteMap
 
   constructor (database: Loki, collections: CollectionsMetaMap, routes: RouteMap) {
@@ -28,6 +30,7 @@ export default class Router {
     utils.reporter.log('Created Router')
   }
 
+  /** Load routes from a Wind config file */
   loadRoutes = (routes: Route[]) => {
     utils.assertArguments(routes, WindConfigRoutesSchema, this.reporter)
 
@@ -40,27 +43,35 @@ export default class Router {
         parsedRoute = { params, path: route.path }
       }
 
-      // We also need to check for a template, get it's path, and set it as the template id...
+      // TODO: We guess the vps pageId, but we may need to update this in future if vps changes its ID's, or we allow templates in different folders.
+      const presumedPageId = `/src/templates/${route.collection}`
 
       this.routes.set(route.collection, {
         ...route,
-        parsedRoute
+        parsedRoute,
+        pageId: presumedPageId
       })
     }
   }
 
+  /**
+   * Fetch a list of all routes, and their corresponding collection items.
+   * TODO: As this is mostly used by vps, we could accept an input of all pageIds, so we can check we have correctly guessed them.
+   * TODO: Memoize this function - OR, store a list of routes, and call this function to update them.
+   * */
   fetchRoutes = () => {
+    // TODO: Cache this, and only update if we update our routes
     const routes = Array.from(this.routes)
 
-    const collectionsWithRoutes = routes.flatMap<CollectionItemWithMeta>(([collectionName]) => {
+    const collectionItems = routes.flatMap<[string, CollectionItemWithMeta]>(([collectionName, routeMeta]) => {
       const collection = this.database.getCollection<CollectionItemWithMeta>(collectionName)
-      return collection ? collection.data : []
+      if (!collection) return []
+      return collection.data.flatMap<[string, CollectionItemWithMeta]>(item => {
+        Reflect.set(item, 'pageId', routeMeta.pageId)
+        return item.path ? [[item.path, item]] : []
+      })
     })
 
-    const collectionItemsWithRoutes = collectionsWithRoutes.flatMap<[string, CollectionItemWithMeta]>(item => {
-      return item.path ? [[item.path, item]] : []
-    })
-
-    return new Map(collectionItemsWithRoutes)
+    return new Map(collectionItems)
   }
 }
