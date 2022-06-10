@@ -4,16 +4,15 @@
   "version": "0.0.0",
   "scripts": {
     "develop": "wind",
-    "build": "wind build",
-    "preview": "vite preview"
+    "build": "wind build"
   },
   "dependencies": {
-    "vue": "^3.2.33"
+    "vue": "^3.2.37"
   },
   "devDependencies": {
-    "sass": "^1.51.0",
-    "typescript": "^4.6.4",
-    "vue-tsc": "^0.34.11",
+    "sass": "^1.52.3",
+    "typescript": "^4.7.3",
+    "vue-tsc": "^0.37.3",
     "wind-ssg": "workspace:*"
   }
 }
