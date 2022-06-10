@@ -113,7 +113,9 @@ export default class GraphQL {
     utils.reporter.log('Created GraphQL Types')
   }
 
-  /** Build and return the GraphQL Schema */
+  /** Build and return the GraphQL Schema
+   * TODO: Cache this schema
+   */
   schema = () => {
     utils.reporter.log('Fetched GraphQL Types')
 
