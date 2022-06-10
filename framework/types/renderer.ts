@@ -6,6 +6,7 @@ export interface PageContext extends PageContextBuiltIn {
   pageData?: Record<string, unknown>
   staticData?: Record<string, unknown>
   _allPageIds: string[]
+  _pageId?: string
   Page: {
     pageQuery?: {
       query?: string

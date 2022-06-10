@@ -1,6 +1,7 @@
 import { createServer, build, InlineConfig } from 'vite'
 import { command } from 'bandersnatch'
 import { loadConfig } from 'unconfig'
+import path from 'path'
 
 // Vite Plugins
 import vue from '@vitejs/plugin-vue'
@@ -8,8 +9,6 @@ import vps from 'vite-plugin-ssr/plugin'
 import { prerender } from 'vite-plugin-ssr/cli'
 
 import { Wind } from '../plugin'
-
-// Config
 
 interface SSGConfig {
   vitePlugins: unknown[]
@@ -27,6 +26,8 @@ async function loadViteConfig (): Promise<InlineConfig> {
       ]
     })
 
+    const wind = await Wind()
+
     return {
       root: process.cwd(),
       plugins: [
@@ -38,7 +39,7 @@ async function loadViteConfig (): Promise<InlineConfig> {
             include: ['wind-ssg']
           }
         }),
-        Wind(),
+        wind,
         ...(source.config?.vitePlugins ?? [])
       ],
       server: {
@@ -64,8 +65,13 @@ export const developCmd = command('develop')
 export const buildCmd = command('build')
   .description('Build the project.')
   .action(async () => {
+    const viteConfigPath = path.resolve(__dirname, '../../src/cli', './vite.config.ts')
     const viteConfig = await loadViteConfig()
+    process.env.WIND_LOAD_DATA = false
     await build(viteConfig)
+    // TODO: Check this, if we run both these steps then we start Wind twice. SSR or client shouldn't need any data?
     await build({ ...viteConfig, build: { ssr: true } })
-    await prerender({ })
+    console.log('LOAD DATA NOW!')
+    process.env.WIND_LOAD_DATA = true
+    await prerender({ configFile: viteConfigPath })
   })

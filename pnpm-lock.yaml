@@ -89,6 +89,7 @@ importers:
 
   starters/vue-blog:
     specifiers:
+      '@faker-js/faker': ^7.2.0
       sass: ^1.52.3
       typescript: ^4.7.3
       vue: ^3.2.37
@@ -97,6 +98,7 @@ importers:
     dependencies:
       vue: 3.2.37
     devDependencies:
+      '@faker-js/faker': 7.2.0
       sass: 1.52.3
       typescript: 4.7.3
       vue-tsc: 0.37.3_typescript@4.7.3
@@ -686,6 +688,11 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@faker-js/faker/7.2.0:
+    resolution: {integrity: sha512-dzjQ0LFT+bPLWg0yyV3MpxaLJp/+VW4a0SnjNSWJ4YpJ928LXDOZAN+kB2/JPPisI3Ra0w2BxbD4M9J7o0jcpw==}
+    engines: {node: '>=14.0.0', npm: '>=6.0.0'}
     dev: true
 
   /@graphql-codegen/core/2.5.1_graphql@15.8.0:

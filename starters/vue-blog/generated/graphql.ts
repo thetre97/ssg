@@ -14,6 +14,7 @@ export type Scalars = {
   Int: number;
   /** The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). */
   Float: number;
+  Date: any;
 };
 
 export type LokiFiltersInput = {
@@ -26,7 +27,9 @@ export type Post = {
   id?: Maybe<Scalars['Float']>;
   title?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['Float']>;
-  date?: Maybe<Scalars['String']>;
+  date?: Maybe<Scalars['Date']>;
+  content?: Maybe<Scalars['String']>;
+  featuredImage?: Maybe<Scalars['String']>;
   path?: Maybe<Scalars['String']>;
   template?: Maybe<Scalars['String']>;
 };
@@ -55,6 +58,8 @@ export type PostFilterInput = {
   title?: InputMaybe<LokiFiltersInput>;
   slug?: InputMaybe<LokiFiltersInput>;
   date?: InputMaybe<LokiFiltersInput>;
+  content?: InputMaybe<LokiFiltersInput>;
+  featuredImage?: InputMaybe<LokiFiltersInput>;
   path?: InputMaybe<LokiFiltersInput>;
   template?: InputMaybe<LokiFiltersInput>;
 };

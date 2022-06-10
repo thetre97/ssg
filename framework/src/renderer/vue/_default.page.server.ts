@@ -32,11 +32,13 @@ export async function render (pageContext: PageContext) {
   return { documentHtml }
 }
 
-export async function onBeforeRender ({ url, Page }: PageContext) {
+export async function onBeforeRender ({ url, Page, _pageId }: PageContext) {
+  if (_pageId?.includes('templates')) return
+
   const pageQuery = Page.pageQuery?.query
   if (pageQuery) {
     const routes = global.__SSG_DATALAYER.router.fetchRoutes()
-    const item = routes.get(url)
+    const item = routes.get(url) ?? {}
 
     // Now use this as variables in the query?
     const { data, errors } = await global.__SSG_DATALAYER.graphql.query({

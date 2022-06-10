@@ -1,10 +1,8 @@
 <template>
   <div class="layout">
     <div class="navigation">
-      <a href="/" class="logo text-red-400"> Framework! </a>
-      <Link href="/">Home</Link>
-      <Link href="/about">About</Link>
-      <Link href="/posts">Posts</Link>
+      <a href="/" class="logo text-red-400"> Wind Demo </a>
+      <Link href="/">Posts</Link>
     </div>
     <div class="content">
       <slot />

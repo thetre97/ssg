@@ -1,8 +1,14 @@
 <template>
-  <div>
+  <div v-if="data?.post">
     <p>Posts template!</p>
     <br>
     <h1 v-if="data">{{ data.post.title }}</h1>
+    <div v-if="data.post.featuredImage">
+      <br>
+      <img :src="data.post.featuredImage" :alt="data.post.title ?? ''">
+      <br>
+    </div>
+    <div v-html="data.post.content"></div>
   </div>
 </template>
 
@@ -21,6 +27,8 @@ query Post ($id: ID!) {
     title
     slug
     date
+    content
+    featuredImage
   }
 }
 </page-query>
@@ -28,5 +36,9 @@ query Post ($id: ID!) {
 <style>
 h1 {
   color: tomato;
+}
+img {
+  height: 500px;
+  width: auto;
 }
 </style>

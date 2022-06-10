@@ -10,21 +10,23 @@ import utils from './lib/utils'
 // Types
 import { IncomingMessage } from 'node:http'
 
-export function Wind (_options = {}): Plugin {
+export async function Wind (_options = {}): Promise<Plugin> {
   utils.reporter.log('Starting Wind with options:', JSON.stringify(_options, null, 2))
 
-  let datalayer: DataLayer | undefined
+  // let datalayer: DataLayer | undefined
+
+  console.log('Load wind?', process.env.WIND_LOAD_DATA)
+  utils.reporter.log('Starting build step in `buildStart`')
+
+  const datalayer = new DataLayer()
+  global.__SSG_DATALAYER = datalayer
+
+  await datalayer.start()
 
   return {
     name: 'wind-ssg',
     enforce: 'pre',
     buildStart: async () => {
-      utils.reporter.log('Starting build step in `buildStart`')
-
-      datalayer = new DataLayer()
-      global.__SSG_DATALAYER = datalayer
-
-      await datalayer.start()
     },
     async transform (src, id) {
       if (!/vue&type=page-query/.test(id)) return
