@@ -28,6 +28,7 @@ export type Post = {
   slug?: Maybe<Scalars['Float']>;
   date?: Maybe<Scalars['String']>;
   path?: Maybe<Scalars['String']>;
+  template?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
@@ -55,4 +56,5 @@ export type PostFilterInput = {
   slug?: InputMaybe<LokiFiltersInput>;
   date?: InputMaybe<LokiFiltersInput>;
   path?: InputMaybe<LokiFiltersInput>;
+  template?: InputMaybe<LokiFiltersInput>;
 };

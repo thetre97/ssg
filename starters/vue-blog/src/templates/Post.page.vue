@@ -14,7 +14,6 @@ import {Post} from '../../generated/graphql'
 const data: { post: Post } = usePageData()
 </script>
 
-
 <page-query>
 query Post ($id: ID!) {
   post (id: $id) {
