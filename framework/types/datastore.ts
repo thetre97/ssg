@@ -1,15 +1,47 @@
-import type { Collection } from 'lokijs'
-import type { ExecutionResult, GraphQLSchema } from 'graphql'
-import type { ObjMap } from 'graphql-compose'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
-import { Key } from 'path-to-regexp'
+import { LokiOps } from 'lokijs'
+import { RouteMeta } from './router'
 
-export interface Schema {
-  getSchema: () => GraphQLSchema
-  createTypes: () => void
+type PartialModel<E, T> = { [P in keyof E]?: T | E[P] };
+type LokiQuery<E> = PartialModel<E & { $and: any; $or: any }, { [Y in keyof LokiOps]?: any }>;
+
+/**
+ * ========================
+ *  DataStore Types
+ * ========================
+ */
+
+/** Specify collection options, like the primary key, unique keys, and a default route. */
+export interface CollectionOptions {
+  /** The collection primary key - usually ID. */
+  primaryKey?: string
+  /** Any unique keys that can be used as filters - for example ID, slug, title */
+  uniqueKeys?: string[]
+  /** A default route for this collection - for example `/posts/:slug` */
+  route?: string
 }
 
+export interface CollectionCreate {
+  /** Collection name - should be in camelCase, but will be formatted to various cases. */
+  name: string
+  /** Specify collection options, like the primary key, unique keys, and a default route. */
+  options?: CollectionOptions
+}
+
+export interface CollectionGet {
+  /** Collection name - must be the formatted name returned by `createCollection`. */
+  name: string
+}
+
+export interface CollectionRemove {
+  /** Collection name - must be the formatted name returned by `createCollection`. */
+  name: string
+}
+
+/**
+ * ========================
+ *  Internal Types
+ * ========================
+ */
 export interface CollectionRelationOptions {
   field: string
   type: string
@@ -17,49 +49,46 @@ export interface CollectionRelationOptions {
   foreignKey: 'id' | string
 }
 
-export interface StoreCollection {
-  collection: Collection
-  add: (items: unknown | unknown[]) => Collection
-  createRelation: (options: CollectionRelationOptions) => Collection
-}
-
-export interface StoreCollectionMeta {
+/** Collection metadata that is stored for use internally. */
+export interface CollectionMeta {
   /** Loki collection name, and GraphQL typeName */
   name: string
+  /** Loki collection primary key */
+  primaryKey: string
   /** GraphQL Query field name */
   fieldName: string
   /** GraphQL Query list name */
   fieldListName: string,
   relations: CollectionRelationOptions[]
-  route: {
-    path: string
-    params: Key[]
-  }
+  /** Template route configuration. */
+  route?: RouteMeta
 }
 
-export interface CollectionOptions {
-  primaryKey: string
-  uniqueKeys: string[]
-  route: string
+export type CollectionsMetaMap = Map<string, CollectionMeta>
+
+/**
+ * ========================
+ *  Collection Types
+ * ========================
+ */
+export type CollectionItem = Record<string, unknown>
+export interface CollectionItemWithMeta extends CollectionItem {
+  id: string
+  path?: string
+  $loki: string
+  meta: Record<string, unknown>
+  pageId?: string
 }
 
-export interface Store {
-  collectionMap: Map<string, StoreCollectionMeta>
-  createCollection: (name: string, option: CollectionOptions) => StoreCollection
-  getCollection: (name: string) => StoreCollection
+export type CollectionItemAdd<Item = CollectionItem> = Item | Item[]
+
+export interface CollectionItemGet {
+  key: string
+}
+export interface CollectionItemFind {
+  query: LokiQuery<CollectionItem>
 }
 
-export type GraphQLExecutor = (query: string, variables?: Record<string, unknown>) => Promise<ExecutionResult<ObjMap<unknown>, ObjMap<unknown>>>
-
-export interface DataStore {
-  store: Store
-  schema: Schema
-  graphql: GraphQLExecutor
-}
-
-export interface PageContextServer extends PageContextBuiltIn {
-  datastore: DataStore
-}
-export interface PageContextClient extends PageContextBuiltInClient {
-  datastore: DataStore
+export interface CollectionItemRemove {
+  key: string
 }

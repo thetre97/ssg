@@ -1,21 +1,14 @@
-import { program, command } from 'bandersnatch'
-import { name, version } from '../../package.json'
+#!/bin/env node
 
-// Commands
-import * as vite from './vite'
-import * as generator from './generator'
+import { program } from 'bandersnatch'
 
-const info = command('info').description('CLI Information').action(() => {
-  console.log(`${name}, version ${version}`)
+import { developCmd, buildCmd } from './vite'
+
+const cli = program({
+  version: true,
+  description: 'Wind SSG CLI'
 })
 
-const cliProgram = program().description('SSG CLI').default(info)
+cli.default(developCmd).add(developCmd).add(buildCmd)
 
-// Add commands to program
-Object.values({ ...vite, ...generator }).forEach(cmd => cliProgram.add(cmd))
-
-export default cliProgram.run()
-  .catch((err) => {
-    console.error(`There was a problem running this command:\n${String(err)}`)
-    process.exit(1)
-  })
+cli.run()

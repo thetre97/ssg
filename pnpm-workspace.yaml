@@ -1,5 +1,3 @@
 packages:
-  - 'starters/**'
   - 'framework'
-  # exclude packages that are inside test directories
-  - '!**/test/**'
+  - 'starters/**'

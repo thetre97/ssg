@@ -4,8 +4,12 @@ import { loadConfig } from 'unconfig'
 
 // Vite Plugins
 import vue from '@vitejs/plugin-vue'
-import ssr from 'vite-plugin-ssr/plugin'
-import { SSGPlugin } from '../plugin/plugin'
+import vps from 'vite-plugin-ssr/plugin'
+import { prerender } from 'vite-plugin-ssr/cli'
+
+import { Wind } from '../plugin'
+
+// Config
 
 interface SSGConfig {
   vitePlugins: unknown[]
@@ -27,12 +31,14 @@ async function loadViteConfig (): Promise<InlineConfig> {
       root: process.cwd(),
       plugins: [
         vue(),
-        ssr({
+        vps({
+          prerender: true,
+          disableBuildChaining: true,
           pageFiles: {
-            include: ['@travisreynolds/ssg']
+            include: ['wind-ssg']
           }
         }),
-        SSGPlugin(),
+        Wind(),
         ...(source.config?.vitePlugins ?? [])
       ],
       server: {
@@ -59,12 +65,7 @@ export const buildCmd = command('build')
   .description('Build the project.')
   .action(async () => {
     const viteConfig = await loadViteConfig()
-
     await build(viteConfig)
-    await build({
-      ...viteConfig,
-      build: {
-        ssr: true
-      }
-    })
+    await build({ ...viteConfig, build: { ssr: true } })
+    await prerender({ })
   })
