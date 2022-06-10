@@ -102,9 +102,6 @@ importers:
       vue-tsc: 0.37.3_typescript@4.7.3
       wind-ssg: link:../../framework
 
-  starters/vue-blog/dist/server:
-    specifiers: {}
-
 packages:
 
   /@ampproject/remapping/2.2.0:
