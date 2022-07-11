@@ -9,13 +9,11 @@ import { prerender } from 'vite-plugin-ssr/cli'
 
 import { Wind } from '../plugin'
 
-interface SSGConfig {
-  vitePlugins: unknown[]
-}
+import { WindConfig } from '../../types/config'
 
 async function loadViteConfig (): Promise<InlineConfig> {
   try {
-    const source = await loadConfig<SSGConfig>({
+    const source = await loadConfig<WindConfig>({
       cwd: process.cwd(),
       sources: [
         {

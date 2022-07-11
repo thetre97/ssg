@@ -106,6 +106,8 @@ export default class Wind {
       onlyFiles: true
     })
 
+    // TODO: Check why we load this with unconfig, then with jiti?
+
     if (entry) {
       // TODO: See if we can improve this - perhaps use vite-node instead, to remove large jiti dependency?
       const src = jiti(entry)
