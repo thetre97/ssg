@@ -5,7 +5,7 @@
     <h1 v-if="data">{{ data.post.title }}</h1>
     <div v-if="data.post.featuredImage">
       <br>
-      <img :src="data.post.featuredImage" :alt="data.post.title ?? ''">
+      <VLazyImage :src="data.post.featuredImage" :alt="data.post.title ?? ''" />
       <br>
     </div>
     <div v-html="data.post.content"></div>
@@ -15,7 +15,9 @@
 <script lang="ts" setup>
 import { inject } from 'vue'
 import { usePageData } from 'wind-ssg/vue'
-import {Post} from '../../generated/graphql'
+import { Post } from '../../generated/graphql'
+
+import VLazyImage from "v-lazy-image"
 
 const data: { post: Post } = usePageData()
 </script>
