@@ -76,7 +76,6 @@
     "vue": "^3.2.37"
   },
   "peerDependencies": {
-    "@vue/server-renderer": "^3.2.37",
     "vue": "^3.2.37"
   }
 }
