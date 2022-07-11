@@ -32,9 +32,7 @@ export async function render (pageContext: PageContext) {
   return { documentHtml }
 }
 
-export async function onBeforeRender ({ url, Page, _pageId }: PageContext) {
-  if (_pageId?.includes('templates')) return
-
+export async function onBeforeRender ({ url, Page }: PageContext) {
   const pageQuery = Page.pageQuery?.query
   if (pageQuery) {
     const routes = global.__SSG_DATALAYER.router.fetchRoutes()
@@ -52,7 +50,7 @@ export async function onBeforeRender ({ url, Page, _pageId }: PageContext) {
 
     if (data) {
       return {
-        pageContext: { pageData: data }
+        pageContext: { [pageDataKey]: data }
       }
     }
   }
@@ -64,7 +62,7 @@ export function prerender () {
   const pages = Array.from(routes).map(([path, route]) => ({
     url: path,
     pageContext: {
-      pageData: {
+      [pageDataKey]: {
         post: route
       }
     }

@@ -1,12 +1,11 @@
 // import { getPage } from 'vite-plugin-ssr/client'
-// import { createApp } from './app'
+import { createApp } from './app'
 
-async function hydrate () {
-  // We do Server Routing, but we can also do Client Routing by using `useClientRouter()`
-  // instead of `getPage()`, see https://vite-plugin-ssr.com/useClientRouter
-  // const pageContext = await getPage()
-  // const app = createApp(pageContext)
-  // app.mount('#app')
+// Types
+import { PageContext } from '../../../types/renderer'
+
+export async function render (pageContext: PageContext) {
+  console.log(pageContext)
+  const app = createApp(pageContext)
+  app.mount('#app')
 }
-
-hydrate()

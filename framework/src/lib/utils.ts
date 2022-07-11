@@ -3,7 +3,7 @@ import consola, { Consola, LogLevel } from 'consola'
 import { assert, create, Struct, StructError } from 'superstruct'
 
 const defaultReporter = consola.create({
-  level: LogLevel.Verbose,
+  level: LogLevel.Warn,
   defaults: {
     tag: 'wind-ssg'
   }

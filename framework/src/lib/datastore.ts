@@ -5,7 +5,7 @@ import { camelCase, pascalCase } from 'change-case'
 import { object, string, array, optional, defaulted, Describe, coerce, union } from 'superstruct'
 import { compile as compilePath, PathFunction } from 'path-to-regexp'
 import { pluralize } from 'graphql-compose'
-import { nanoid } from 'nanoid'
+import cuid from 'cuid'
 
 // Types
 import {
@@ -73,7 +73,7 @@ export class Collection {
       }
     }
 
-    const id = item.id as string | number ?? nanoid()
+    const id = item.id as string | number ?? cuid()
 
     // TODO: Add a check here to make sure we aren't duplicating paths /and or ID's
     // TODO: Decide whether to allow a user to add a path field to override this.

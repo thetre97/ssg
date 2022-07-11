@@ -11,11 +11,8 @@ import utils from './lib/utils'
 import { IncomingMessage } from 'node:http'
 
 export async function Wind (_options = {}): Promise<Plugin> {
-  utils.reporter.log('Starting Wind with options:', JSON.stringify(_options, null, 2))
+  utils.reporter.info('Starting Wind with options:', JSON.stringify(_options, null, 2))
 
-  // let datalayer: DataLayer | undefined
-
-  console.log('Load wind?', process.env.WIND_LOAD_DATA)
   utils.reporter.log('Starting build step in `buildStart`')
 
   const datalayer = new DataLayer()
@@ -26,8 +23,6 @@ export async function Wind (_options = {}): Promise<Plugin> {
   return {
     name: 'wind-ssg',
     enforce: 'pre',
-    buildStart: async () => {
-    },
     async transform (src, id) {
       if (!/vue&type=page-query/.test(id)) return
 
@@ -39,14 +34,14 @@ export async function Wind (_options = {}): Promise<Plugin> {
     },
     configureServer (server) {
       return () => {
-        utils.reporter.log('Configuring Vite server')
+        utils.reporter.info('Configuring Vite server')
 
         let graphqlEndpoint = ''
         server.httpServer?.once('listening', () => {
           const host = !server.config.server?.host || typeof server.config.server.host === 'boolean' ? 'localhost' : server.config.server.host
           graphqlEndpoint = `http://${host || 'localhost'}:${server.config.server.port || 3000}/graphql`
 
-          utils.reporter.log(`Created GraphQL endpoint at ${graphqlEndpoint}`)
+          utils.reporter.success(`Created GraphQL endpoint at ${graphqlEndpoint}`)
 
           setTimeout(() => {
             console.log(`  > GraphQL Explorer: ${graphqlEndpoint}`)
@@ -101,7 +96,7 @@ export async function Wind (_options = {}): Promise<Plugin> {
           res.statusCode = statusCode
           res.setHeader('Content-Type', contentType).end(body)
 
-          utils.reporter.log(`Successfully rendered page ${pageContextInit.url}`)
+          utils.reporter.success(`Successfully rendered page ${pageContextInit.url}`)
         })
       }
     }

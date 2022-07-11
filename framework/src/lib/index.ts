@@ -107,6 +107,7 @@ export default class Wind {
     })
 
     if (entry) {
+      // TODO: See if we can improve this - perhaps use vite-node instead, to remove large jiti dependency?
       const src = jiti(entry)
       this.reporter.log('Loaded file')
       return src.default

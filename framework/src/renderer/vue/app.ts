@@ -1,13 +1,11 @@
 import { createSSRApp, defineComponent, h } from 'vue'
 import PageShell from './PageShell.vue'
-import { setPageData } from './usePageData'
+import { setPageData, pageDataKey } from './usePageData'
 
 // Types
 import { PageContext } from '../../../types/renderer'
 
 export function createApp (pageContext: PageContext) {
-  const { Page, pageData } = pageContext
-
   const PageWithLayout = defineComponent({
     render () {
       return h(
@@ -15,7 +13,7 @@ export function createApp (pageContext: PageContext) {
         {},
         {
           default () {
-            return h(Page, {})
+            return h(pageContext.Page, {})
           }
         }
       )
@@ -24,7 +22,7 @@ export function createApp (pageContext: PageContext) {
 
   const app = createSSRApp(PageWithLayout)
 
-  setPageData(app, pageData)
+  setPageData(app, pageContext[pageDataKey])
 
   return app
 }
