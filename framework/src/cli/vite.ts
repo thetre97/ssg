@@ -1,6 +1,8 @@
 import { createServer, build, InlineConfig } from 'vite'
 import { command } from 'bandersnatch'
 import { loadConfig } from 'unconfig'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 
 // Vite Plugins
 import vue from '@vitejs/plugin-vue'
@@ -12,6 +14,13 @@ import { Wind } from '../plugin'
 
 // Types
 import type { WindConfig } from '../../types/config'
+
+interface PrerenderPageContext {
+    _prerenderResult: {
+    filePath: string
+    fileContent: string
+  }
+}
 
 async function loadViteConfig (): Promise<InlineConfig> {
   try {
@@ -68,5 +77,14 @@ export const buildCmd = command('build')
     await build(viteConfig)
     await build({ ...viteConfig, build: { ssr: true } })
 
-    await prerender({ viteConfig })
+    await prerender({
+      viteConfig,
+      onPagePrerender: async (pageContext: PrerenderPageContext) => {
+        const { filePath, fileContent } = pageContext._prerenderResult
+        await fs.mkdir(path.dirname(filePath), { recursive: true })
+        await fs.writeFile(filePath, fileContent)
+      }
+    })
+
+    console.log('\nFinished building site.\n')
   })
