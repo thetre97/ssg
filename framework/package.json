@@ -1,6 +1,6 @@
 {
   "name": "wind-ssg",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "keywords": [],
   "author": "Travis Reynolds <travis@travisreynolds.dev>",
@@ -26,6 +26,9 @@
   "bin": {
     "wind": "./dist/cli/index.js"
   },
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "develop": "tsup --watch",
     "build": "tsup",
