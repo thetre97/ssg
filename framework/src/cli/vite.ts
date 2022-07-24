@@ -77,6 +77,8 @@ export const buildCmd = command('build')
     await build(viteConfig)
     await build({ ...viteConfig, build: { ssr: true } })
 
+    console.log('\n Prerendering site...')
+
     await prerender({
       viteConfig,
       onPagePrerender: async (pageContext: PrerenderPageContext) => {
