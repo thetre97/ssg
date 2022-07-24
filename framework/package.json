@@ -76,6 +76,7 @@
     "vue": "^3.2.37"
   },
   "peerDependencies": {
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "vite-plugin-ssr": "0.4.11"
   }
 }
