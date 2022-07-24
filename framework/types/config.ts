@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-import { Route } from './router'
-import { Plugin } from 'vite'
 import { App } from 'vue'
+import { Plugin } from 'vite'
+import { Route } from './router'
 
 export interface WindConfig {
   routes: Route[],

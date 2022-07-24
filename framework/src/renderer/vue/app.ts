@@ -25,7 +25,7 @@ export async function createApp (pageContext: PageContext) {
   const app = createSSRApp(PageWithLayout)
   setPageData(app, pageContext[pageDataKey])
 
-  if (clientFn?.default) clientFn.default(app)
+  if (clientFn?.default) clientFn.default({ app })
 
   return app
 }

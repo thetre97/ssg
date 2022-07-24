@@ -1,5 +1,5 @@
-import { App } from 'vue'
+import { WindClient, clientConfig } from 'wind-ssg'
 
-export default function client(app: App<Element>) {
-  console.log(`We have::`, app);
-}
+export default clientConfig(({app}: WindClient) => {
+
+})
