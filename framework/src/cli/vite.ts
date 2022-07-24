@@ -5,11 +5,13 @@ import { loadConfig } from 'unconfig'
 // Vite Plugins
 import vue from '@vitejs/plugin-vue'
 import vps from 'vite-plugin-ssr/plugin'
-import { prerender } from 'vite-plugin-ssr/cli'
+import { prerender } from 'vite-plugin-ssr/prerender'
 
+// Wind
 import { Wind } from '../plugin'
 
-import { WindConfig } from '../../types/config'
+// Types
+import type { WindConfig } from '../../types/config'
 
 async function loadViteConfig (): Promise<InlineConfig> {
   try {

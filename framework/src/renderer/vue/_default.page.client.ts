@@ -1,4 +1,3 @@
-// import { getPage } from 'vite-plugin-ssr/client'
 import { createApp } from './app'
 
 // Types
