@@ -17,7 +17,7 @@
     "vite-plugin-ssr": "0.4.11",
     "vite-plugin-windicss": "^1.8.7",
     "vue-tsc": "^0.39.0",
-    "wind-ssg": "^0.0.1",
+    "wind-ssg": "latest",
     "windicss": "^3.5.6"
   }
 }
