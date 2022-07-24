@@ -19,7 +19,7 @@ async function loadViteConfig (): Promise<InlineConfig> {
       cwd: process.cwd(),
       sources: [
         {
-          files: 'ssg.config',
+          files: 'wind.config',
           extensions: ['ts', 'js', 'mjs']
         }
       ]
