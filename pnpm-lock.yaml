@@ -97,11 +97,12 @@ importers:
       vite-plugin-windicss: ^1.8.7
       vue: ^3.2.37
       vue-tsc: ^0.39.0
-      wind-ssg: workspace:*
+      wind-ssg: ^0.0.1
       windicss: ^3.5.6
     dependencies:
       v-lazy-image: 2.1.1
       vue: 3.2.37
+      wind-ssg: link:../../framework
     devDependencies:
       '@faker-js/faker': 7.3.0
       sass: 1.54.0
@@ -109,7 +110,6 @@ importers:
       vite-plugin-ssr: 0.4.11
       vite-plugin-windicss: 1.8.7
       vue-tsc: 0.39.0_typescript@4.7.4
-      wind-ssg: link:../../framework
       windicss: 3.5.6
 
   starters/vue-blog/dist/server:
