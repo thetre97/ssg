@@ -6,7 +6,7 @@ export default serverConfig((server) => {
   server.loadSource(store => {
     const collection = store.createCollection({ name: 'Post' })
 
-    const posts = Array.from({ length: 10000 }, (_, i) => ({
+    const posts = Array.from({ length: 5000 }, (_, i) => ({
       id: i + 1,
       title: faker.lorem.words(4),
       slug: i + 1,
