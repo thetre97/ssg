@@ -87,4 +87,6 @@ export const buildCmd = command('build')
     })
 
     console.log('\nFinished building site.\n')
+
+    // TODO: Delete the dist/server files, and move /dist/client to /dist (or soemthing else, like /output?)
   })
