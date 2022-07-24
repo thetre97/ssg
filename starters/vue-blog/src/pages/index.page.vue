@@ -13,7 +13,6 @@
 </template>
 
 <script lang="ts" setup>
-import { inject } from 'vue'
 import { usePageData } from 'wind-ssg/vue'
 import { Post } from '../../generated/graphql'
 
