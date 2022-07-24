@@ -10,7 +10,7 @@ import type { PageContext } from '../../../types/renderer'
 export const passToClient = ['pageProps', 'urlPathname', pageDataKey]
 
 export async function render (pageContext: PageContext) {
-  const app = createApp(pageContext)
+  const app = await createApp(pageContext)
   const appHtml = await renderToString(app)
 
   const title = 'Vite SSR app'

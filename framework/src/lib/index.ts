@@ -1,17 +1,17 @@
 import Loki from 'lokijs'
 import _jiti from 'jiti'
-import { createHooks, Hookable, HookKeys, Hooks } from 'hookable'
 import fg from 'fast-glob'
+import { createHooks, Hookable, HookKeys, Hooks } from 'hookable'
 
 import DataStore from './datastore'
 import GraphQL from './graphql'
+import Router from './router'
 import utils from './utils'
 
 // Types
 import type { CollectionItem, CollectionsMetaMap } from '../../types/datastore'
-import { WindConfig } from '../../types/config'
-import Router from './router'
-import { RouteMap } from '../../types/router'
+import type { WindConfig } from '../../types/config'
+import type { RouteMap } from '../../types/router'
 
 export interface DataLayerHooks {
   loadSource: (store: DataStore) => void

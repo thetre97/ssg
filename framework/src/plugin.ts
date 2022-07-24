@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser'
+import fg from 'fast-glob'
 import { Plugin } from 'vite'
 import { getGraphQLParameters, processRequest, renderGraphiQL, shouldRenderGraphiQL, sendResult, Request } from 'graphql-helix'
-
 import { renderPage } from 'vite-plugin-ssr'
 
 import DataLayer from './lib/index'
@@ -9,6 +9,9 @@ import utils from './lib/utils'
 
 // Types
 import { IncomingMessage } from 'node:http'
+
+const virtualWindClient = 'virtual:wind-client'
+const resolvedVirtualWindClientModuleId = '\0' + virtualWindClient
 
 export async function Wind (_options = {}): Promise<Plugin> {
   utils.reporter.info('Starting Wind with options:', JSON.stringify(_options, null, 2))
@@ -23,14 +26,25 @@ export async function Wind (_options = {}): Promise<Plugin> {
   return {
     name: 'wind-ssg',
     enforce: 'pre',
+    resolveId (id) {
+      if (id === virtualWindClient) {
+        return resolvedVirtualWindClientModuleId
+      }
+    },
+    async load (id) {
+      if (id === resolvedVirtualWindClientModuleId) {
+        const [clientPath] = await fg(['wind.client.*'], { cwd: process.cwd(), onlyFiles: true, deep: 1, absolute: true })
+        if (clientPath) return `export * as clientFn from '${clientPath}'`
+      }
+    },
     async transform (src, id) {
-      if (!/vue&type=page-query/.test(id)) return
-
-      utils.reporter.log('Transforming:', id)
-      const data = { query: src }
-      return `export default Comp => {
-        Comp.pageQuery = ${JSON.stringify(data)}
-      }`
+      if (/vue&type=page-query/.test(id)) {
+        utils.reporter.log('Transforming:', id)
+        const data = { query: src }
+        return `export default Comp => {
+          Comp.pageQuery = ${JSON.stringify(data)}
+        }`
+      }
     },
     configureServer (server) {
       return () => {
